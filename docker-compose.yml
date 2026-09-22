@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:17
+    container_name: notaflow-db
+    environment:
+      POSTGRES_DB: notaflow
+      POSTGRES_USER: notaflow
+      POSTGRES_PASSWORD: notaflow
+    ports:
+      - "5433:5432"
+    volumes:
+      - notaflow-data:/var/lib/postgresql/data
+
+volumes:
+  notaflow-data:
