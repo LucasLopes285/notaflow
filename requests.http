@@ -1,0 +1,26 @@
+### Listar todas as notas
+GET http://localhost:8080/notas
+
+
+
+### Criar nota fiscal (primeira vez - deve dar 201)
+POST http://localhost:8080/notas
+Content-Type: application/json
+
+{
+  "numero": "99999",
+  "cnpjEmissor": "12345678000199",
+  "dataEmissao": "2026-09-20",
+  "valorTotal": 150.50
+}
+
+### Repetir a mesma nota (deve dar 409 agora)
+POST http://localhost:8080/notas
+Content-Type: application/json
+
+{
+  "numero": "99999",
+  "cnpjEmissor": "12345678000199",
+  "dataEmissao": "2026-09-20",
+  "valorTotal": 999.00
+}

@@ -1,5 +1,6 @@
 package com.lucaslopes.notaflow;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,5 +19,12 @@ public class GlobalExceptionHandler {
         ex.getBindingResult().getFieldErrors()
                 .forEach(erro -> erros.put(erro.getField(), erro.getDefaultMessage()));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erros);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> tratarViolacaoDeIntegridade(DataIntegrityViolationException ex) {
+        Map<String, String> erro = new HashMap<>();
+        erro.put("erro", "Já existe uma nota fiscal com este número para este CNPJ emissor");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(erro);
     }
 }
