@@ -1,26 +1,21 @@
-### Listar todas as notas
-GET http://localhost:8080/notas
-
-
-
-### Criar nota fiscal (primeira vez - deve dar 201)
+### CNPJ com formato certo mas dígito verificador errado (deve dar 400 agora)
 POST http://localhost:8080/notas
 Content-Type: application/json
 
 {
-  "numero": "99999",
-  "cnpjEmissor": "12345678000199",
+  "numero": "77774",
+  "cnpjEmissor": "11222333000199",
   "dataEmissao": "2026-09-20",
-  "valorTotal": 150.50
+  "valorTotal": 100.00
 }
 
-### Repetir a mesma nota (deve dar 409 agora)
+### CNPJ válido de verdade (deve dar 201)
 POST http://localhost:8080/notas
 Content-Type: application/json
 
 {
-  "numero": "99999",
-  "cnpjEmissor": "12345678000199",
+  "numero": "88889",
+  "cnpjEmissor": "11222333000181",
   "dataEmissao": "2026-09-20",
-  "valorTotal": 999.00
+  "valorTotal": 100.00
 }

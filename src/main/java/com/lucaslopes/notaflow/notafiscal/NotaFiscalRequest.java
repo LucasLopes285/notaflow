@@ -9,7 +9,7 @@ public record NotaFiscalRequest(
         String numero,
 
         @NotBlank(message = "CNPJ é obrigatório")
-        @Pattern(regexp = "\\d{14}", message = "CNPJ deve conter 14 dígitos")
+        @CnpjValido(message = "CNPJ inválido")
         String cnpjEmissor,
 
         @NotNull(message = "data de emissão é obrigatória")
