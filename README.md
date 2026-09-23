@@ -29,4 +29,8 @@ A aplicação sobe em `http://localhost:8080`. Verifique a saúde em:
 
 ## Status
 
-🚧 Em desenvolvimento — Fase 0 (setup) concluída.
+Em desenvolvimento. 
+
+**Fase 0 — SETUP** ✅ concluída.\
+**Fase 1 — CRUD com regras reais** ✅ concluída \
+**Fase 2 — Processamento assíncrono** 🔜 próxima
