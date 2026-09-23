@@ -1,21 +1,8 @@
-### CNPJ com formato certo mas dígito verificador errado (deve dar 400 agora)
-POST http://localhost:8080/notas
-Content-Type: application/json
+### Listar com paginação padrão
+GET http://localhost:8080/notas
 
-{
-  "numero": "77774",
-  "cnpjEmissor": "11222333000199",
-  "dataEmissao": "2026-09-20",
-  "valorTotal": 100.00
-}
+### Listar página específica, tamanho customizado
+GET http://localhost:8080/notas?page=0&size=2
 
-### CNPJ válido de verdade (deve dar 201)
-POST http://localhost:8080/notas
-Content-Type: application/json
-
-{
-  "numero": "88889",
-  "cnpjEmissor": "11222333000181",
-  "dataEmissao": "2026-09-20",
-  "valorTotal": 100.00
-}
+### Listar ordenado por valor, crescente
+GET http://localhost:8080/notas?sort=valorTotal,asc

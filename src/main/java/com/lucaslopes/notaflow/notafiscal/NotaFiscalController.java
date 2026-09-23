@@ -1,13 +1,15 @@
 package com.lucaslopes.notaflow.notafiscal;
 
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.data.domain.Pageable;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/notas")
@@ -36,10 +38,13 @@ public class NotaFiscalController {
     }
 
     @GetMapping
-    public List<NotaFiscalResponse> listar() {
-        return repository.findAll().stream()
-                .map(NotaFiscalResponse::fromEntity)
-                .toList();
+    public PaginaResponse<NotaFiscalResponse> listar(
+            @PageableDefault(size = 20, sort = "dataEmissao", direction = Sort.Direction.DESC)
+            Pageable pageable) {
+
+        Page<NotaFiscal> pagina = repository.findAll(pageable);
+
+        return PaginaResponse.fromPage(pagina.map(NotaFiscalResponse::fromEntity));
     }
 
     @GetMapping("/{id}")
