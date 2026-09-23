@@ -3,13 +3,18 @@ package com.lucaslopes.notaflow.notafiscal;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.math.BigDecimal;
 import java.net.URI;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/notas")
@@ -39,10 +44,33 @@ public class NotaFiscalController {
 
     @GetMapping
     public PaginaResponse<NotaFiscalResponse> listar(
+            @RequestParam(required = false) String cnpjEmissor,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFim,
+            @RequestParam(required = false) BigDecimal valorMinimo,
+            @RequestParam(required = false) BigDecimal valorMaximo,
             @PageableDefault(size = 20, sort = "dataEmissao", direction = Sort.Direction.DESC)
             Pageable pageable) {
 
-        Page<NotaFiscal> pagina = repository.findAll(pageable);
+        Specification<NotaFiscal> filtro = Specification.unrestricted();
+
+        if (cnpjEmissor != null) {
+            filtro = filtro.and(NotaFiscalSpecifications.comCnpjEmissor(cnpjEmissor));
+        }
+        if (dataInicio != null) {
+            filtro = filtro.and(NotaFiscalSpecifications.comDataEmissaoApartirDe(dataInicio));
+        }
+        if (dataFim != null) {
+            filtro = filtro.and(NotaFiscalSpecifications.comDataEmissaoAte(dataFim));
+        }
+        if (valorMinimo != null) {
+            filtro = filtro.and(NotaFiscalSpecifications.comValorMinimo(valorMinimo));
+        }
+        if (valorMaximo != null) {
+            filtro = filtro.and(NotaFiscalSpecifications.comValorMaximo(valorMaximo));
+        }
+
+        Page<NotaFiscal> pagina = repository.findAll(filtro, pageable);
 
         return PaginaResponse.fromPage(pagina.map(NotaFiscalResponse::fromEntity));
     }
