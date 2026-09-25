@@ -57,4 +57,10 @@ public class NotaFiscal {
     public void marcarComoFalha() { this.status = StatusNota.FALHA; }
     public void definirCaminhoImagem(String caminho) { this.caminhoImagem = caminho; }
 
+    public void atualizarComResultadoExtracao(ResultadoExtracao resultado) {
+        this.numero = resultado.numero();
+        this.cnpjEmissor = resultado.cnpjEmissor();
+        this.dataEmissao = resultado.dataEmissao();
+        this.valorTotal = resultado.valorTotal();
+    }
 }

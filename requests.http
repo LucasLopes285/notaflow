@@ -1,11 +1,8 @@
-### Só por CNPJ
-GET http://localhost:8080/notas?cnpjEmissor=11222333000199
+GET http://localhost:8080/notas/18
 
-### Só por faixa de valor
-GET http://localhost:8080/notas?valorMinimo=100&valorMaximo=200
-
-### CNPJ + período combinados
-GET http://localhost:8080/notas?cnpjEmissor=12345678000199&dataInicio=2026-01-01&dataFim=2026-12-31
-
-### Sem filtro nenhum (deve trazer tudo, paginado)
-GET http://localhost:8080/notas
+{
+  "numero": "temp",
+  "cnpjEmissor": "11222333000181",
+  "dataEmissao": "2026-09-20",
+  "valorTotal": 1.00
+}

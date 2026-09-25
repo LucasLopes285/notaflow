@@ -21,9 +21,11 @@ import java.time.LocalDate;
 public class NotaFiscalController {
 
     private final NotaFiscalRepository repository;
+    private final NotaFiscalPublisher publisher;
 
-    public NotaFiscalController(NotaFiscalRepository repository) {
+    public NotaFiscalController(NotaFiscalRepository repository, NotaFiscalPublisher publisher) {
         this.repository = repository;
+        this.publisher = publisher;
     }
 
     @PostMapping
@@ -38,9 +40,13 @@ public class NotaFiscalController {
 
         NotaFiscal salva = repository.save(nota);
 
+        publisher.publicarParaProcessamento(salva.getId());
+
         URI location = uriBuilder.path("/notas/{id}").buildAndExpand(salva.getId()).toUri();
         return ResponseEntity.created(location).body(NotaFiscalResponse.fromEntity(salva));
     }
+
+
 
     @GetMapping
     public PaginaResponse<NotaFiscalResponse> listar(
