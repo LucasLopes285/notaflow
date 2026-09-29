@@ -1,8 +1,1 @@
-GET http://localhost:8080/notas/18
-
-{
-  "numero": "temp",
-  "cnpjEmissor": "11222333000181",
-  "dataEmissao": "2026-09-20",
-  "valorTotal": 1.00
-}
+GET http://localhost:8080/notas/24

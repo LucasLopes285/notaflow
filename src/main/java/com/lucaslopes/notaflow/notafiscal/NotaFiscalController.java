@@ -8,6 +8,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,30 +23,40 @@ public class NotaFiscalController {
 
     private final NotaFiscalRepository repository;
     private final NotaFiscalPublisher publisher;
+    private final ArmazenamentoService armazenamentoService;
 
-    public NotaFiscalController(NotaFiscalRepository repository, NotaFiscalPublisher publisher) {
+    public NotaFiscalController(
+            NotaFiscalRepository repository,
+            NotaFiscalPublisher publisher,
+            ArmazenamentoService armazenamentoService) {
         this.repository = repository;
         this.publisher = publisher;
+        this.armazenamentoService = armazenamentoService;
     }
 
-    @PostMapping
+    @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<NotaFiscalResponse> criar(
-            @Valid @RequestBody NotaFiscalRequest request,
+            @RequestParam("arquivo") MultipartFile arquivo,
             UriComponentsBuilder uriBuilder) {
 
-        NotaFiscal nota = new NotaFiscal(
-                request.numero(), request.cnpjEmissor(),
-                request.dataEmissao(), request.valorTotal()
-        );
+        if (arquivo.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        String caminho = armazenamentoService.salvar(arquivo);
+
+        NotaFiscal nota = new NotaFiscal();
+        nota.definirCaminhoImagem(caminho);
 
         NotaFiscal salva = repository.save(nota);
 
         publisher.publicarParaProcessamento(salva.getId());
 
         URI location = uriBuilder.path("/notas/{id}").buildAndExpand(salva.getId()).toUri();
-        return ResponseEntity.created(location).body(NotaFiscalResponse.fromEntity(salva));
-    }
+        return ResponseEntity.accepted().location(location).body(NotaFiscalResponse.fromEntity(salva));
 
+
+    }
 
 
     @GetMapping

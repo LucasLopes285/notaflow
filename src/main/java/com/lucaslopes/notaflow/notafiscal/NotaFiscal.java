@@ -13,16 +13,16 @@ public class NotaFiscal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String numero;
 
-    @Column(name = "cnpj_emissor", nullable = false, length = 14)
+    @Column(name = "cnpj_emissor", length = 14)
     private String cnpjEmissor;
 
-    @Column(name = "data_emissao", nullable = false)
+    @Column(name = "data_emissao")
     private LocalDate dataEmissao;
 
-    @Column(name = "valor_total", nullable = false, precision = 12,scale = 2)
+    @Column(name = "valor_total", precision = 12,scale = 2)
     private BigDecimal valorTotal;
 
     @Enumerated(EnumType.STRING)
@@ -35,7 +35,7 @@ public class NotaFiscal {
     @Column(name = "criado_em", nullable = false, updatable = false)
     private LocalDateTime criadoEm = LocalDateTime.now();
 
-    protected NotaFiscal() {}
+    public NotaFiscal() {}
 
     public NotaFiscal(String numero, String cnpjEmissor, LocalDate dataEmissao, BigDecimal valorTotal) {
         this.numero = numero;

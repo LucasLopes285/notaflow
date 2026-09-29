@@ -1,10 +1,13 @@
 package com.lucaslopes.notaflow.notafiscal;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.math.BigDecimal;
@@ -21,30 +24,34 @@ class NotaFiscalControllerTest {
     @Mock
     private NotaFiscalRepository repository;
 
+    @Mock
+    private NotaFiscalPublisher publisher;
+
+    @Mock
+    private ArmazenamentoService armazenamentoService;
+
     private NotaFiscalController controller;
 
-    @org.junit.jupiter.api.BeforeEach
+    @BeforeEach
     void setUp() {
-        controller = new NotaFiscalController(repository);
+        controller = new NotaFiscalController(repository, publisher, armazenamentoService);
     }
 
     @Test
-    void deveCriarNotaERetornar201() {
-        NotaFiscalRequest request = new NotaFiscalRequest(
-                "12345", "12345678000199", LocalDate.now(), new BigDecimal("150.50")
+    void deveCriarNotaERetornar202() {
+        MultipartFile arquivo = new MockMultipartFile(
+                "arquivo", "nota.jpg", "image/jpeg", "conteudo-fake".getBytes()
         );
 
-        NotaFiscal notaSalva = new NotaFiscal(
-                request.numero(), request.cnpjEmissor(), request.dataEmissao(), request.valorTotal()
-        );
-        when(repository.save(any(NotaFiscal.class))).thenReturn(notaSalva);
+        when(armazenamentoService.salvar(any())).thenReturn("/uploads/nota-fake.jpg");
+        when(repository.save(any(NotaFiscal.class))).thenAnswer(invocacao -> invocacao.getArgument(0));
 
         ResponseEntity<NotaFiscalResponse> resposta =
-                controller.criar(request, UriComponentsBuilder.newInstance());
+                controller.criar(arquivo, UriComponentsBuilder.newInstance());
 
-        assertThat(resposta.getStatusCode().value()).isEqualTo(201);
-        assertThat(resposta.getBody().numero()).isEqualTo("12345");
-        verify(repository, times(1)).save(any(NotaFiscal.class));
+        assertThat(resposta.getStatusCode().value()).isEqualTo(202);
+        assertThat(resposta.getBody().status()).isEqualTo(StatusNota.PENDENTE);
+        verify(publisher, times(1)).publicarParaProcessamento(any());
     }
 
     @Test

@@ -24,10 +24,10 @@ public class NotaFiscalConsumer {
             ResultadoExtracao resultado = extrator.extrair(nota.getCaminhoImagem());
             nota.atualizarComResultadoExtracao(resultado);
             nota.marcarComoConcluida();
+            repository.save(nota);
         } catch (Exception e) {
             nota.marcarComoFalha();
+            repository.save(nota);
         }
-
-        repository.save(nota);
     }
 }
