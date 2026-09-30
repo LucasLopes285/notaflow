@@ -24,9 +24,12 @@ public class ArmazenamentoService {
         }
     }
 
-    public  String salvar(MultipartFile arquivo) {
-        String extensao = extrairExtensao(arquivo.getOriginalFilename());
-        String nomeUnico = UUID.randomUUID() + extensao;
+    public String salvar(MultipartFile arquivo) {
+        String nomeOriginal = arquivo.getOriginalFilename();
+        String extensao = extrairExtensao(nomeOriginal);
+        String prefixo = extrairNomeBase(nomeOriginal);
+
+        String nomeUnico = prefixo + "-" + UUID.randomUUID() + extensao;
         Path destino = diretorioBase.resolve(nomeUnico);
 
         try {
@@ -36,6 +39,13 @@ public class ArmazenamentoService {
         }
 
         return destino.toString();
+    }
+
+    private String extrairNomeBase(String nomeOriginal) {
+        if (nomeOriginal == null || !nomeOriginal.contains(".")) {
+            return "arquivo";
+        }
+        return nomeOriginal.substring(0, nomeOriginal.lastIndexOf('.'));
     }
 
     private String extrairExtensao(String nomeOriginal) {

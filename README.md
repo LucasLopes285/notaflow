@@ -33,4 +33,4 @@ Em desenvolvimento.
 
 **Fase 0 — SETUP** ✅ concluída.\
 **Fase 1 — CRUD com regras reais** ✅ concluída \
-**Fase 2 — Processamento assíncrono** 🔜 próxima
+**Fase 2 — Processamento assíncrono** ✅ concluída

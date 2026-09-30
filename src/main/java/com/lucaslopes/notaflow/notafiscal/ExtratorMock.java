@@ -12,12 +12,16 @@ public class ExtratorMock implements Extrator {
 
     @Override
     public ResultadoExtracao extrair(String caminhoImagem) {
+        if (caminhoImagem != null && caminhoImagem.contains("falha-transitoria")) {
+            throw new ErroTransitorioException("Falha simulada de rede/recurso", null);
+        }
+        if (caminhoImagem != null && caminhoImagem.contains("falha-permanente")) {
+            throw new ErroPermanenteException("Imagem ilegível simulada", null);
+        }
+
         String numeroUnico = "MOCK-" + System.currentTimeMillis();
         return new ResultadoExtracao(
-                numeroUnico,
-                "11222333000181",
-                LocalDate.now(),
-                new BigDecimal("42.00")
+                numeroUnico, "11222333000181", LocalDate.now(), new BigDecimal("42.00")
         );
     }
 }
